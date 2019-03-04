@@ -1,5 +1,6 @@
 import re
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize
 
 stop_words = set(stopwords.words('english'))
@@ -20,11 +21,16 @@ class FileUtil:
             sentences.extend(sent_tokenize(line))
         return sentences
 
-    def get_words(self, sentence, lower_case=False, remove_stop_words=False):
+    def get_words(self, sentence, lower_case=False, remove_stop_words=False, stemming=False):
         words = sentence.split()
         words = list(map(lambda x: re.sub(r'\W+', '', x), words))
+
         if lower_case:
             words = list(map(lambda x: x.lower(), words))
         if remove_stop_words:
             words = list(filter(lambda x: x not in stop_words, words))
+        if stemming:
+            ps = PorterStemmer()
+            words = list(map(lambda x: ps.stem(x) , words))
+
         return words
